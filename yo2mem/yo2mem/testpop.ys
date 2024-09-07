@@ -1,0 +1,11 @@
+#execution begins at address 0
+    .pos 0
+    irmovq $0x80, %rsp
+    call main
+    halt
+main:
+    irmovq $0x1, %rbx
+    pushq %rbx
+    irmovq $0xfedcba9876543210, %rbx
+    popq %rbx
+    ret

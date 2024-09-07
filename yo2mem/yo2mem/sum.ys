@@ -1,0 +1,20 @@
+# Y86 Assembly code to add 1 to a number
+.pos 0
+    irmovq Stack, %rsp    # Set up stack pointer
+    call Main             # Execute Main program
+    halt
+
+Main:
+    irmovq 10, %r10        # Load the number to be incremented into %r10
+    irmovq $1, %r11        # Load the value 1 into %r11
+    pushq %r10             # Push the original number onto the stack
+    pushq %r11             # Push 1 onto the stack
+    popq %r11              # Pop 1 into %r11
+    popq %r10              # Pop the original number into %r10
+    addq %r11, %r10        # Add 1 to the number in %r10
+    halt
+
+# Stack area
+.align 8
+Stack:
+

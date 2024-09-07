@@ -1,0 +1,92 @@
+# bubble sort
+
+.pos 0                  # execution starts at address 0
+irmovq 0x200, %rsp      # stack pointer
+call main
+halt
+
+load:
+	irmovq 0x8, %r11
+	# array
+	irmovq 0x300, %r9
+	irmovq 0x1, %r10
+           rmmovq %r10, (%r9)
+	addq %r11, %r9
+	irmovq 0x34, %r10
+	rmmovq %r10, (%r9)
+	addq %r11, %r9
+	irmovq 0x25, %r10
+	rmmovq %r10, (%r9)
+	addq %r11, %r9
+	irmovq 0x12, %r10
+	rmmovq %r10, (%r9)
+	addq %r11, %r9
+	irmovq 0x22, %r10
+	rmmovq %r10, (%r9)
+	addq %r11, %r9
+	irmovq 0x11, %r10
+	rmmovq %r10, (%r9)
+	addq %r11, %r9
+	irmovq 0x90, %r10
+	rmmovq %r10, (%r9)
+	addq %r11, %r9
+    irmovq $0x14, %r10
+    rmmovq %r10, (%r9)
+	addq %r11, %r9
+    irmovq $0x16, %r10
+    rmmovq %r10, (%r9)
+	addq %r11, %r9
+    irmovq $0x500, %r10
+    rmmovq %r10, (%r9)
+	xorq %r10, %r10
+    xorq %r9, %r9
+    xorq %r11, %r11
+    ret
+
+main:
+	call load
+        irmovq 0x300, %rdi
+        irmovq $10, %rsi
+        call sort
+        ret
+
+sort:
+	irmovq $8, %r8
+        irmovq $1, %r9
+        irmovq $0, %rdx
+        loop_a:
+        	loop_a_check:
+                	rrmovq %rdx, %r14
+			subq %r9, %r14
+                        subq %rsi, %r14
+                        jge exit
+			addq %r9, %rdx
+		rrmovq %rdi, %r10
+		rrmovq %rdi, %r11
+		addq %r8, %r11
+		irmovq $0, %rbx
+
+	loop_b:
+		mrmovq (%r10), %r12
+		mrmovq (%r11), %r13
+		subq %r12, %r13
+		jge loop_a_check
+		call swap
+		loop_b_check:
+			addq %r8, %r10
+			addq %r8, %r11
+			addq %r9, %rbx
+			rrmovq %rsi, %r14
+			subq %rdx, %r14
+			subq %rbx, %r14
+			jg loop_b
+			jmp loop_a
+	exit:
+		ret
+
+swap:
+	mrmovq (%r10), %r12
+	mrmovq (%r11), %r13
+	rmmovq %r13, (%r10)
+	rmmovq %r12, (%r11)
+	ret

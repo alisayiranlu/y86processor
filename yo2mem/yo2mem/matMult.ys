@@ -1,0 +1,356 @@
+.pos 0                  # execution starts at address 0
+irmovq 0x400, %rsp      # sets up stack pointer
+call main               # call to main program
+halt                    # halt program
+
+load:
+	irmovq 0x8, %r11
+	# matrix A
+	irmovq 0x500, %r9
+	irmovq $1, %r10
+	rmmovq %r10, (%r9)
+	addq %r11, %r9
+	irmovq $2, %r10
+	rmmovq %r10, (%r9)
+	addq %r11, %r9
+	irmovq $4, %r10
+	rmmovq %r10, (%r9)
+	addq %r11, %r9
+	irmovq $2, %r10
+        rmmovq %r10, (%r9)
+        addq %r11, %r9
+	irmovq $6, %r10
+        rmmovq %r10, (%r9)
+        addq %r11, %r9
+	irmovq $1, %r10
+        rmmovq %r10, (%r9)
+        addq %r11, %r9
+	irmovq $3, %r10
+        rmmovq %r10, (%r9)
+        addq %r11, %r9
+	irmovq $2, %r10
+        rmmovq %r10, (%r9)
+        addq %r11, %r9
+	irmovq $1, %r10
+        rmmovq %r10, (%r9)
+        addq %r11, %r9
+
+	# matrix 2
+	irmovq 0x600, %r9
+	irmovq $3, %r10
+	rmmovq %r10, (%r9)
+	addq %r11, %r9
+	irmovq $2, %r10
+        rmmovq %r10, (%r9)
+        addq %r11, %r9
+	irmovq $7, %r10
+        rmmovq %r10, (%r9)
+        addq %r11, %r9
+	irmovq $9, %r10
+        rmmovq %r10, (%r9)
+        addq %r11, %r9
+	irmovq $11, %r10
+        rmmovq %r10, (%r9)
+        addq %r11, %r9
+	irmovq $4, %r10
+        rmmovq %r10, (%r9)
+        addq %r11, %r9
+	irmovq $3, %r10
+        rmmovq %r10, (%r9)
+        addq %r11, %r9
+	irmovq $1, %r10
+        rmmovq %r10, (%r9)
+        addq %r11, %r9
+	irmovq $5, %r10
+        rmmovq %r10, (%r9)
+        addq %r11, %r9
+
+	# result matrix
+	irmovq 0x700, %r9
+	irmovq 0x0, %r10
+        rmmovq %r10, (%r9)
+        addq %r11, %r9
+        irmovq 0x0, %r10
+	rmmovq %r10, (%r9)
+	addq %r11, %r9
+        irmovq 0x0, %r10
+	rmmovq %r10, (%r9)
+	addq %r11, %r9
+        irmovq 0x0, %r10
+	rmmovq %r10, (%r9)
+	addq %r11, %r9
+        irmovq 0x0, %r10
+	rmmovq %r10, (%r9)
+	addq %r11, %r9
+        irmovq 0x0, %r10
+	rmmovq %r10, (%r9)
+	addq %r11, %r9
+        irmovq 0x0, %r10
+	rmmovq %r10, (%r9)
+	addq %r11, %r9
+        irmovq 0x0, %r10
+        rmmovq %r10, (%r9)
+        addq %r11, %r9
+        irmovq 0x0, %r10
+        rmmovq %r10, (%r9)
+
+	xorq %r10, %r10
+	xorq %r9, %r9
+	xorq %r11, %r11
+	ret
+
+main:
+	call load
+	irmovq $8, %r9   # constant
+	irmovq $24, %r10 # constant
+	irmovq 0x500, %rdi  # matrix 1
+	irmovq 0x600, %rsi  # matrix 2
+	irmovq 0x700, %r8   # resultant matrix
+
+	item1:
+		rrmovq %rdi, %rcx  # copy matrix 1
+		rrmovq %rsi, %rdx  # copy matrix 2
+		irmovq $0, %r11    # set result val
+		mrmovq (%rcx), %r13  # first multiply value
+		mrmovq (%rdx), %r14  # second multiply value
+		call multiply        # perform multiplication
+		addq %rax, %r11      # add value to result
+		addq %r9, %rcx       # mat1[0][2]
+		addq %r10, %rdx      # mat2[2][0]
+		mrmovq (%rcx), %r13  # first multiply value
+		mrmovq (%rdx), %r14  # second multiply value
+		call multiply
+		addq %rax, %r11      # add value to result
+		addq %r9, %rcx	     # mat1[0][2]
+		addq %r10, %rdx	     # mat2[2][0]
+		mrmovq (%rcx), %r13  # first multiply value
+                mrmovq (%rdx), %r14  # second multiply value
+		call multiply
+		addq %rax, %r11      # add value to result
+		rmmovq %r11, (%r8)   # move val to memory of resultant matrix
+		addq %r9, %r8
+
+	item2:
+		rrmovq %rdi, %rcx  # copy matrix 1
+                rrmovq %rsi, %rdx  # copy matrix 2
+		irmovq $0, %r11	   # set result	val
+		addq %r9, %rdx     # mat2[0][1]
+		mrmovq (%rcx), %r13  # first multiply value
+		mrmovq (%rdx), %r14  # second multiply value
+                call multiply 	     # perform multiplication
+                addq %rax, %r11	     # add value to result
+		addq %r9, %rcx	     # mat1[0][2]
+		addq %r10, %rdx	     # mat2[2][0]
+		mrmovq (%rcx), %r13  # first multiply value
+                mrmovq (%rdx), %r14  # second multiply value
+                call multiply
+		addq %rax, %r11	     # add value to result
+		addq %r9, %rcx       # mat1[0][2]
+                addq %r10, %rdx      # mat2[2][0]
+                mrmovq (%rcx), %r13  # first multiply value
+                mrmovq (%rdx), %r14  # second multiply value
+                call multiply
+                addq %rax, %r11	     # add value to result
+                rmmovq %r11, (%r8)   # move val	to memory of resultant matrix
+                addq %r9, %r8
+
+	item3:
+		rrmovq %rdi, %rcx  # copy matrix 1
+                rrmovq %rsi, %rdx  # copy matrix 2
+                irmovq $0, %r11    # set result val
+		addq %r9, %rdx     # mat2[0][1]
+		addq %r9, %rdx     # mat2[0][2]
+		mrmovq (%rcx), %r13  # first multiply value
+                mrmovq (%rdx), %r14  # second multiply value
+                call multiply        # perform multiplication
+                addq %rax, %r11      # add value to result
+		addq %r9, %rcx       # mat1[0][2]
+                addq %r10, %rdx      # mat2[2][0]
+                mrmovq (%rcx), %r13  # first multiply value
+                mrmovq (%rdx), %r14  # second multiply value
+                call multiply
+                addq %rax, %r11      # add value to result
+		addq %r9, %rcx       # mat1[0][2]
+                addq %r10, %rdx      # mat2[2][0]
+                mrmovq (%rcx), %r13  # first multiply value
+                mrmovq (%rdx), %r14  # second multiply value
+                call multiply
+                addq %rax, %r11      # add value to result
+                rmmovq %r11, (%r8)   # move val to memory of resultant matrix
+                addq %r9, %r8
+
+	item4:
+		rrmovq %rdi, %rcx  # copy matrix 1
+                rrmovq %rsi, %rdx  # copy matrix 2
+                irmovq $0, %r11    # set result val
+		addq %r10, %rcx    # mat1[1][0]
+		mrmovq (%rcx), %r13  # first multiply value
+                mrmovq (%rdx), %r14  # second multiply value
+                call multiply        # perform multiplication
+                addq %rax, %r11      # add value to result
+		addq %r9, %rcx       # mat1[0][2]
+                addq %r10, %rdx      # mat2[2][0]
+                mrmovq (%rcx), %r13  # first multiply value
+                mrmovq (%rdx), %r14  # second multiply value
+                call multiply
+                addq %rax, %r11      # add value to result
+		addq %r9, %rcx       # mat1[0][2]
+                addq %r10, %rdx      # mat2[2][0]
+                mrmovq (%rcx), %r13  # first multiply value
+                mrmovq (%rdx), %r14  # second multiply value
+                call multiply
+                addq %rax, %r11      # add value to result
+                rmmovq %r11, (%r8)   # move val to memory of resultant matrix
+                addq %r9, %r8
+
+	item5:
+		rrmovq %rdi, %rcx  # copy matrix 1
+                rrmovq %rsi, %rdx  # copy matrix 2
+                irmovq $0, %r11    # set result val
+                addq %r10, %rcx    # mat1[1][0]
+		addq %r9, %rdx     # mat2[0][1]
+		mrmovq (%rcx), %r13  # first multiply value
+                mrmovq (%rdx), %r14  # second multiply value
+                call multiply        # perform multiplication
+                addq %rax, %r11      # add value to result
+		addq %r9, %rcx       # mat1[0][2]
+                addq %r10, %rdx      # mat2[2][0]
+                mrmovq (%rcx), %r13  # first multiply value
+                mrmovq (%rdx), %r14  # second multiply value
+                call multiply
+                addq %rax, %r11      # add value to result
+		addq %r9, %rcx       # mat1[0][2]
+                addq %r10, %rdx      # mat2[2][0]
+                mrmovq (%rcx), %r13  # first multiply value
+                mrmovq (%rdx), %r14  # second multiply value
+                call multiply
+                addq %rax, %r11      # add value to result
+                rmmovq %r11, (%r8)   # move val to memory of resultant matrix
+                addq %r9, %r8
+
+	item6:
+		rrmovq %rdi, %rcx  # copy matrix 1
+		rrmovq %rsi, %rdx  # copy matrix 2
+		irmovq $0, %r11    # set result val
+		addq %r10, %rcx    # mat1[1][0]
+                addq %r9, %rdx 	   # mat2[0][1]
+		addq %r9, %rdx     # mat2[0][2]
+		mrmovq (%rcx), %r13  # first multiply value
+                mrmovq (%rdx), %r14  # second multiply value
+                call multiply        # perform multiplication
+                addq %rax, %r11      # add value to result
+		addq %r9, %rcx       # mat1[0][2]
+                addq %r10, %rdx      # mat2[2][0]
+                mrmovq (%rcx), %r13  # first multiply value
+                mrmovq (%rdx), %r14  # second multiply value
+                call multiply
+                addq %rax, %r11      # add value to result
+		addq %r9, %rcx       # mat1[0][2]
+                addq %r10, %rdx      # mat2[2][0]
+                mrmovq (%rcx), %r13  # first multiply value
+                mrmovq (%rdx), %r14  # second multiply value
+                call multiply
+                addq %rax, %r11      # add value to result
+                rmmovq %r11, (%r8)   # move val to memory of resultant matrix
+                addq %r9, %r8
+
+	item7:
+		rrmovq %rdi, %rcx  # copy matrix 1
+		rrmovq %rsi, %rdx  # copy matrix 2
+		irmovq $0, %r11    # set result val
+		addq %r10, %rcx    # mat1[1][0]
+		addq %r10, %rcx    # mat1[2][0]
+		mrmovq (%rcx), %r13  # first multiply value
+		mrmovq (%rdx), %r14  # second multiply value
+		call multiply        # perform multiplication
+		addq %rax, %r11      # add value to result
+                addq %r9, %rcx       # mat1[0][2]
+		addq %r10, %rdx      # mat2[2][0]
+		mrmovq (%rcx), %r13  # first multiply value
+		mrmovq (%rdx), %r14  # second multiply value
+		call multiply
+		addq %rax, %r11      # add value to result
+                addq %r9, %rcx       # mat1[0][2]
+		addq %r10, %rdx      # mat2[2][0]
+		mrmovq (%rcx), %r13  # first multiply value
+		mrmovq (%rdx), %r14  # second multiply value
+		call multiply
+		addq %rax, %r11      # add value to result
+		rmmovq %r11, (%r8)   # move val to memory of resultant matrix
+		addq %r9, %r8
+
+	item8:
+		rrmovq %rdi, %rcx  # copy matrix 1
+		rrmovq %rsi, %rdx  # copy matrix 2
+		irmovq $0, %r11    # set result val
+		addq %r10, %rcx    # mat1[1][0]
+                addq %r10, %rcx    # mat1[2][0]
+		addq %r9, %rdx     # mat2[0][1]
+		mrmovq (%rcx), %r13  # first multiply value
+		mrmovq (%rdx), %r14  # second multiply value
+		call multiply        # perform multiplication
+		addq %rax, %r11      # add value to result
+                addq %r9, %rcx       # mat1[0][2]
+		addq %r10, %rdx      # mat2[2][0]
+		mrmovq (%rcx), %r13  # first multiply value
+		mrmovq (%rdx), %r14  # second multiply value
+		call multiply
+		addq %rax, %r11      # add value to result
+                addq %r9, %rcx       # mat1[0][2]
+		addq %r10, %rdx      # mat2[2][0]
+		mrmovq (%rcx), %r13  # first multiply value
+		mrmovq (%rdx), %r14  # second multiply value
+		call multiply
+		addq %rax, %r11      # add value to result
+		rmmovq %r11, (%r8)   # move val to memory of resultant matrix
+		addq %r9, %r8
+
+	item9:
+		rrmovq %rdi, %rcx  # copy matrix 1
+		rrmovq %rsi, %rdx  # copy matrix 2
+		irmovq $0, %r11    # set result val
+		addq %r10, %rcx    # mat1[1][0]
+                addq %r10, %rcx    # mat1[2][0]
+                addq %r9, %rdx     # mat2[0][1]
+		addq %r9, %rdx     # mat2[0][2]
+		mrmovq (%rcx), %r13  # first multiply value
+		mrmovq (%rdx), %r14  # second multiply value
+		call multiply        # perform multiplication
+		addq %rax, %r11      # add value to result
+                addq %r9, %rcx       # mat1[0][2]
+		addq %r10, %rdx      # mat2[2][0]
+		mrmovq (%rcx), %r13  # first multiply value
+		mrmovq (%rdx), %r14  # second multiply value
+		call multiply
+		addq %rax, %r11      # add value to result
+                addq %r9, %rcx       # mat1[0][2]
+		addq %r10, %rdx      # mat2[2][0]
+		mrmovq (%rcx), %r13  # first multiply value
+		mrmovq (%rdx), %r14  # second multiply value
+		call multiply
+		addq %rax, %r11      # add value to result
+		rmmovq %r11, (%r8)   # move val to memory of resultant matrix
+		addq %r9, %r8
+
+	ret
+
+multiply:
+	pushq %r9
+	pushq %r11
+	irmovq $0, %rax  # to reset register rax
+	irmovq $1, %r9   # to do constant - 1
+	irmovq $0, %r11  # greater than 0 check
+	mult_loop:
+		addq %r13, %rax
+		subq %r9, %r14
+		subq %r11, %r14
+		jg mult_loop
+		popq %r11
+		popq %r9
+		rrmovq %r11, %r12
+		ret
+
+	.pos 0x400
+stack:
+
+

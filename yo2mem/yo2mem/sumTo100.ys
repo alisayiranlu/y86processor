@@ -1,0 +1,17 @@
+# function to calculate sum of the first 100 numbers 
+	irmovq $4080, %rsp        # initializing stack pointer to $4080 to hold local variables
+	irmovq $0, %rax           # intializing sum as 0
+	irmovq $1, %r8            # counter = 1 (iterates through numbers)
+	irmovq $1, %rbx           # current number being added to sum, holds value of 1
+	irmovq $101, %rcx         # another counter set to 101, indicates when to stop the loop
+	jmp if
+for:	
+	addq %rbx, %rax           # adds num to sum
+	addq %r8, %rbx            # increments num by the counter
+if:
+	pushq %rbx                # pushes the current number onto the stack
+	subq %rcx, %rbx           # subtracts loop counter from current num to determine if loop should keep going
+	popq %rbx                 # pops original value of rbx from the stack
+	jl for                    # jumps back to for if the subtraction was less than 0
+	halt
+

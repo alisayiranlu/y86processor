@@ -1,0 +1,24 @@
+                            | #%rcx = i, %rdx = j
+                            | #case 1:
+                            | #irmovq $1, %rcx #i = 1
+                            | #irmovq $2, %rdx #j = 2
+                            | 
+                            | #case 2:
+0x000: 30f10800000000000000 | irmovq $8, %rcx #i = 8
+0x00a: 30f20700000000000000 | irmovq $7, %rdx #j = 7
+                            | 
+0x014: 2016                 | rrmovq %rcx, %rsi
+0x016: 6126                 | subq %rdx,%rsi #i-j
+0x018: 713a00000000000000   | jle L1 #if i < j go to L1
+0x021: 30f30300000000000000 | irmovq $3, %rbx #move the immediate 3 into the register %rbx
+0x02b: 6131                 | subq %rbx, %rcx #subtract $3 from i and store in i
+0x02d: 30f40400000000000000 | irmovq $4, %rsp #move the immediate 4 into the register %rsp
+0x037: 6042                 | addq %rsp, %rdx #add $4 to j and store in j
+0x039: 90                   | ret #end program
+                            | 
+                            | 
+0x03a:                      | L1 : #i<=j
+0x03a: 30f10700000000000000 |     irmovq $7, %rcx #put immediate 7 into i
+0x044: 30f50100000000000000 |     irmovq $1, %rbp #put immediate 1 into %rbp
+0x04e: 6052                 |     addq %rbp, %rdx #increment the value of j 
+0x050: 90                   |     ret #end program
